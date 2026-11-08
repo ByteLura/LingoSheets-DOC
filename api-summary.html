@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API Summary — LingoSheets Pro Documentation</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+<div class="site-title">LingoSheets <span>Pro</span></div>
+<div class="site-tag">Spreadsheet localization for Unity — a ByteLura product</div>
+</header>
+<div class="layout">
+<nav class="sidebar"><div class="nav-heading">Documentation</div><a href="index.html">Home</a><a href="quick-start.html">Quick Start</a><a href="sheet-format.html">Sheet Format</a><a href="import-and-merge.html">Import and Merge</a><a href="export-and-missing-reports.html">Export and Missing Reports</a><a href="runtime-use.html">Runtime Use</a><a href="fonts-and-fallback-chains.html">Fonts and Fallback Chains</a><a href="rtl-and-arabic-shaping.html">RTL and Arabic Shaping</a><a href="pseudo-localization.html">Pseudo-Localization</a><a href="sample-guide.html">Sample Guide: Hello World Tour</a><a href="api-summary.html" class="active">API Summary</a><a href="honest-limits.html">Honest Limits</a><a href="troubleshooting-and-support.html">Troubleshooting and Support</a></nav>
+<main>
+<h1>API Summary</h1>
+<p class="lede">A compact summary of the public surface. This page summarises the API Reference shipped inside the package; it adds no calls that page does not list. Namespaces: <code>ByteLura.LingoSheets</code> for runtime, <code>ByteLura.LingoSheets.Editor</code> for Editor tools.</p>
+
+<h2>Localization (static facade)</h2>
+<ul>
+<li><code>Initialize(LingoSettings)</code> — one-time setup. Skippable when Run Setup was used, because settings then auto-load from Resources; explicit initialisation always wins.</li>
+<li><code>EnsureInitialized()</code> — loads settings from Resources when present.</li>
+<li><code>CurrentLanguage</code> — the active LanguageCode.</li>
+<li><code>SetLanguage(LanguageCode)</code> — switches language; raises <code>LanguageChanged</code> once per actual change.</li>
+<li><code>LanguageChanged</code> event — carries the new LanguageCode; the current language is already updated when handlers run.</li>
+<li><code>Get(key)</code> — resolved string for the current language, through the fallback chain.</li>
+<li><code>Get(key, params object[])</code> — indexed placeholder formatting ({0}, {1}), invariant formatting.</li>
+<li><code>GetNamed(key, IReadOnlyDictionary&lt;string, string&gt;)</code> — named placeholder replacement ({playerName}).</li>
+<li><code>TryGet(key, out string)</code> and <code>HasKey(key)</code> — non-committal lookups.</li>
+<li><code>MissingLog</code> — the in-memory list of fallback records: key, requested language, resolved-from language, hit count.</li>
+<li><code>MissingKeyFound</code> event — raised for buyer tooling when a lookup resolves by fallback.</li>
+<li><code>ClearMissingLog()</code> — empties the log. The log also clears on initialisation.</li>
+<li><code>Settings</code> and <code>IsInitialized</code> — the active settings asset and whether one is loaded.</li>
+</ul>
+<p>Behaviour contract: a lookup never returns null, and lookups are written so they do not throw into the game loop. A malformed placeholder returns the raw text and counts a defect. An unknown named placeholder is left in place and counted.</p>
+
+<h2>LanguageCode</h2>
+<ul>
+<li>Construction from a string, with normalisation to <code>en</code> / <code>pt-BR</code> form (lower-case language, title-case region; underscores, case, and surrounding spaces are forgiven).</li>
+<li><code>BaseLanguage</code> — the language without its region (<code>pt</code> for <code>pt-BR</code>).</li>
+<li><code>FromSystemLanguage(...)</code> and the matching conversion back to <code>SystemLanguage</code>; unknown maps to the empty code.</li>
+<li><code>DisplayName</code> — a menu-ready name.</li>
+<li>The empty code means no language and is valid wherever a code is accepted.</li>
+</ul>
+
+<h2>StringTable</h2>
+<ul>
+<li>The imported sheet as an asset: <code>Entries</code>, <code>Languages</code> (in column order), <code>DefaultLanguage</code>.</li>
+<li><code>FindEntry(key)</code>, <code>HasKey(key)</code>.</li>
+<li>Direct edits are possible in the inspector; code can merge values through <code>AddOrUpdateEntry</code>.</li>
+<li>Lookup construction keeps the last entry for a duplicated key and counts the duplicate in the table's build report.</li>
+</ul>
+
+<h2>LingoSettings</h2>
+<ul>
+<li><code>Table</code> — the active string table.</li>
+<li><code>DefaultLanguage</code>.</li>
+<li><code>FallBackToKey</code> — whether the final fallback step returns the key itself (on) or an empty string (off).</li>
+<li><code>PseudoLocalization</code> — the layout stress-test toggle (<a href="pseudo-localization.html">Pseudo-Localization</a>).</li>
+<li><code>TmpFonts</code> and <code>GuiFonts</code> — the per-language font maps; <code>FindTmpFont(code)</code> and <code>FindGuiFont(code)</code> answer lookups (<a href="fonts-and-fallback-chains.html">Fonts and Fallback Chains</a>).</li>
+</ul>
+
+<h2>Components</h2>
+<ul>
+<li><code>LocalizedTextMeshPro</code> — binds a TMP_Text (UI or 3D) to a key.</li>
+<li><code>LocalizedText</code> — binds a uGUI Text label to a key.</li>
+<li>Shared behaviour: serialized key, optional inspector format arguments, refresh on enable and on language change, per-language font application, optional automatic alignment flip for right-to-left languages, Arabic shaping on output.</li>
+<li><code>LanguageDropdownTMP</code> and <code>LanguageDropdown</code> — language pickers listing the table's languages by display name; selection switches the language, and an external switch moves the picker without a second language-change event.</li>
+</ul>
+
+<h2>PseudoLocalization</h2>
+<ul>
+<li><code>PseudoLocalization.Apply(text)</code> — brackets the text, doubles vowels, and pads length by roughly a third (about 35 percent). Deterministic. Placeholders pass through byte-identical. Null or empty input returns empty.</li>
+</ul>
+
+<h2>RtlSupport and ArabicShaper</h2>
+<ul>
+<li><code>RtlSupport.IsRightToLeft(code)</code> — base-language detection for ar, he, fa, ur, ps, sd, ug, yi, dv, ckb.</li>
+<li><code>RtlSupport.ContainsRtlCharacters(text)</code> and <code>ContainsArabicCharacters(text)</code>.</li>
+<li><code>ArabicShaper.Shape(text)</code> — logical-order Arabic to shaped, visually ordered form for single-line UI text, with lam-alef ligatures and diacritic marks kept attached (<a href="rtl-and-arabic-shaping.html">RTL and Arabic Shaping</a>, scope on the <a href="honest-limits.html">Honest Limits</a> page).</li>
+</ul>
+
+<h2>Editor tools (public)</h2>
+<ul>
+<li><code>StringTableImporter</code> — sheet grid or file to table, with the plain-language import report (<a href="import-and-merge.html">Import and Merge</a>).</li>
+<li><code>StringTableExporter</code> — table to CSV/TSV, full or untranslated-only per language (<a href="export-and-missing-reports.html">Export and Missing Reports</a>).</li>
+<li><code>MissingTranslationReport</code> — per-language missing counts, coverage percentages, and missing key lists (<a href="export-and-missing-reports.html">Export and Missing Reports</a>).</li>
+<li><code>LingoSheetsVersion.Version</code> — the package version string, 1.0.0.</li>
+</ul>
+<footer class="page-footer">LingoSheets Pro is a ByteLura product. Support: <a href="mailto:bytelura@gmail.com">bytelura@gmail.com</a></footer>
+</main>
+</div>
+</body>
+</html>

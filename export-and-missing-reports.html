@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Export and Missing Reports — LingoSheets Pro Documentation</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+<div class="site-title">LingoSheets <span>Pro</span></div>
+<div class="site-tag">Spreadsheet localization for Unity — a ByteLura product</div>
+</header>
+<div class="layout">
+<nav class="sidebar"><div class="nav-heading">Documentation</div><a href="index.html">Home</a><a href="quick-start.html">Quick Start</a><a href="sheet-format.html">Sheet Format</a><a href="import-and-merge.html">Import and Merge</a><a href="export-and-missing-reports.html" class="active">Export and Missing Reports</a><a href="runtime-use.html">Runtime Use</a><a href="fonts-and-fallback-chains.html">Fonts and Fallback Chains</a><a href="rtl-and-arabic-shaping.html">RTL and Arabic Shaping</a><a href="pseudo-localization.html">Pseudo-Localization</a><a href="sample-guide.html">Sample Guide: Hello World Tour</a><a href="api-summary.html">API Summary</a><a href="honest-limits.html">Honest Limits</a><a href="troubleshooting-and-support.html">Troubleshooting and Support</a></nav>
+<main>
+<h1>Export and Missing-Translation Reports</h1>
+
+<h2>Export</h2>
+<p>Export writes the active table back to a sheet, using the same header contract as import: <code>key</code>, <code>comment</code>, then one column per language. An exported file can be edited in any spreadsheet application and re-imported with nothing lost.</p>
+<ul>
+<li>Formats: CSV, or TSV by file extension. There is no XLSX export in v1; XLSX is import-only (<a href="honest-limits.html">Honest Limits</a>). Every common spreadsheet application opens CSV and TSV, and translators may return either CSV or XLSX — both import.</li>
+<li>The comment column is written back exactly as stored, so translator notes survive the round-trip.</li>
+<li>Exporting an unchanged table and re-importing the file is a lossless round-trip: the import report reads zero added, zero updated, and every key unchanged.</li>
+</ul>
+<p>Export actions live in the home window's Table block: Export sheet writes everything; Export untranslated writes the gaps (below).</p>
+
+<h2>Export untranslated</h2>
+<p>The untranslated-only export writes a sheet containing only the rows that one chosen language is missing, with every other language's text left in place as reference. That file is the translator hand-off: it contains exactly the work that remains, and nothing else.</p>
+<ul>
+<li>One export is per language. Run it once for each language with gaps.</li>
+<li>A row counts as missing for a language when its cell for that language is empty. A cell holding only spaces counts as present.</li>
+<li>When the filled sheet comes back, import it through the normal path (<a href="import-and-merge.html">Import and Merge</a>). The merge updates exactly those cells, and the import report confirms the counts.</li>
+</ul>
+<p>Each language row in the Missing translations block also carries a shortcut that exports the untranslated sheet for that language directly.</p>
+
+<h2>The missing-translation report</h2>
+<p>The report is built from the table itself, and the home window displays it without recounting. For each language it gives:</p>
+<ul>
+<li>The count of missing keys.</li>
+<li>Coverage as a whole percentage (rounded down).</li>
+<li>The list of missing keys for that language. A key missing in two languages appears in both lists.</li>
+</ul>
+<p>The Missing translations block sorts languages with the worst coverage first. When every key is present in every language, the block reads: "Every key is translated in every language."</p>
+
+<h2>The runtime missing-key log</h2>
+<p>The report above describes the table. The runtime log describes your game. During Play, every lookup that resolves past the first step of the fallback chain (<a href="runtime-use.html">Runtime Use</a>) is recorded with:</p>
+<ul>
+<li>The key.</li>
+<li>The language that was requested.</li>
+<li>Where the value actually came from.</li>
+<li>A hit count, so repeated misses on the same key and language increment a counter instead of filling the list.</li>
+</ul>
+<p>In Play Mode the home window shows this log in its Runtime missing keys block, with a Clear button. The log lives in memory only; it is cleared on initialisation and on an explicit clear, and nothing from it is written to disk.</p>
+<p>Together the two views answer the two release questions: what is missing from the table, and what did players' language choices actually ask for that the table could not serve directly.</p>
+<footer class="page-footer">LingoSheets Pro is a ByteLura product. Support: <a href="mailto:bytelura@gmail.com">bytelura@gmail.com</a></footer>
+</main>
+</div>
+</body>
+</html>

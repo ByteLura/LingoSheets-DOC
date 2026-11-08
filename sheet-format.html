@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sheet Format — LingoSheets Pro Documentation</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+<div class="site-title">LingoSheets <span>Pro</span></div>
+<div class="site-tag">Spreadsheet localization for Unity — a ByteLura product</div>
+</header>
+<div class="layout">
+<nav class="sidebar"><div class="nav-heading">Documentation</div><a href="index.html">Home</a><a href="quick-start.html">Quick Start</a><a href="sheet-format.html" class="active">Sheet Format</a><a href="import-and-merge.html">Import and Merge</a><a href="export-and-missing-reports.html">Export and Missing Reports</a><a href="runtime-use.html">Runtime Use</a><a href="fonts-and-fallback-chains.html">Fonts and Fallback Chains</a><a href="rtl-and-arabic-shaping.html">RTL and Arabic Shaping</a><a href="pseudo-localization.html">Pseudo-Localization</a><a href="sample-guide.html">Sample Guide: Hello World Tour</a><a href="api-summary.html">API Summary</a><a href="honest-limits.html">Honest Limits</a><a href="troubleshooting-and-support.html">Troubleshooting and Support</a></nav>
+<main>
+<h1>Sheet Format</h1>
+<p class="lede">CSV / TSV / XLSX rules, header discipline. One page of rules. If a sheet follows them, it imports. This page expands the Sheet Format page shipped inside the package; nothing here adds a rule the importer does not apply.</p>
+<figure class="doc-shot"><img src="images/window-setup.jpg" alt="Unity Editor with the LingoSheets Pro window after setup, showing the starter string table and completed translations for four languages"><figcaption>After setup, the home window shows the starter table created from the starter sheet.</figcaption></figure>
+
+<h2>The header row</h2>
+<p>Row 1 is the header.</p>
+<ul>
+<li>The first cell must be <code>key</code>. The check is case-insensitive and a byte-order mark at the start of the file is tolerated.</li>
+<li>After it, one column per language, headed with its language code: <code>en</code>, <code>es</code>, <code>de</code>, <code>pt-BR</code>.</li>
+<li>Codes are forgiving about spelling. <code>PT-br</code>, <code>pt_BR</code>, and <code> pt-br </code> all normalise to <code>pt-BR</code>: lower-case language, title-case region.</li>
+<li>One optional extra column: <code>comment</code>. Comments are notes for your translators. They are stored on the table and written back on export, so they round-trip.</li>
+<li>Any other column is ignored, and the import report counts it as a warning and tells you it was ignored.</li>
+<li>A sheet whose first cell is not <code>key</code>, or that repeats a language column, is refused. The refusal names the problem cell in plain language. Nothing is imported from a refused sheet.</li>
+</ul>
+
+<h2>The rows</h2>
+<ul>
+<li>Column 1 is the key: <code>menu.start</code>, <code>hud.ammo</code>, <code>dialogue.intro.04</code>. Keys are case-sensitive and should never change once shipped, because code and components refer to them.</li>
+<li>A row with an empty key is skipped and counted in the report.</li>
+<li>A row whose key starts with <code>#</code> is a comment row: skipped and counted.</li>
+<li>If a key appears twice, the last row wins, and the report warns you with the row number.</li>
+<li>An empty cell means not translated yet. It is not an error. It is exactly what the missing-translation report counts.</li>
+<li>A cell holding only spaces counts as present. Spacing is the translator's decision, and the report respects it.</li>
+</ul>
+
+<h2>Values</h2>
+<ul>
+<li>Placeholders: <code>{0}</code>, <code>{1}</code> for values your code supplies, and <code>{playerName}</code>-style named placeholders for values supplied from a dictionary. Translators should copy placeholders exactly. A broken placeholder shows the raw text in game and is counted as a defect; it does not interrupt gameplay.</li>
+<li>Line breaks inside a cell are fine in CSV and TSV (the field is quoted) and in XLSX.</li>
+<li>Leading and trailing spaces are kept.</li>
+</ul>
+
+<h2>CSV</h2>
+<ul>
+<li>Comma-separated, UTF-8.</li>
+<li>Quoting follows the usual rules: a field containing a comma, a quote, or a line break is wrapped in double quotes, and a quote inside a field is doubled.</li>
+<li>Commas, quotes, embedded line breaks, empty cells, and Arabic and Hebrew text are all ordinary content for the codec.</li>
+<li>A malformed field, such as a quote that never closes, produces a defined result plus a warning naming the row. The importer reports it; it does not fail silently.</li>
+</ul>
+
+<h2>TSV</h2>
+<ul>
+<li>The same contract, tab-separated.</li>
+<li>The delimiter is chosen by file extension: comma for .csv, tab for .tsv, with a header check as a fallback.</li>
+</ul>
+
+<h2>XLSX</h2>
+<ul>
+<li>Import only. There is no XLSX export; export is CSV/TSV (<a href="export-and-missing-reports.html">Export and Missing Reports</a>).</li>
+<li>The first worksheet is read. If a workbook holds several worksheets, only the first one is imported, and the report says so.</li>
+<li>Shared strings, inline strings, and cached formula results are understood. Formulas are never executed.</li>
+<li>Numbers import as their plain text.</li>
+<li>Dates are not converted. A date-formatted cell imports as its raw number, which usually shows up in the coverage report as a strange translation. If you ever need a date as a string, type it as text in the sheet.</li>
+</ul>
+
+<h2>A minimal example</h2>
+<pre><code>key,comment,en,es,de
+menu.start,Main menu start button,Start,Empezar,Start
+game.score,{0} is the point count,Score: {0},Puntos: {0},Punkte: {0}</code></pre>
+<p>Header discipline is the whole contract: one <code>key</code> column, one column per language, an optional <code>comment</code> column, and nothing else carrying meaning.</p>
+<footer class="page-footer">LingoSheets Pro is a ByteLura product. Support: <a href="mailto:bytelura@gmail.com">bytelura@gmail.com</a></footer>
+</main>
+</div>
+</body>
+</html>

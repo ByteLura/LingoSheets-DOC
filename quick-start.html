@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick Start — LingoSheets Pro Documentation</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+<div class="site-title">LingoSheets <span>Pro</span></div>
+<div class="site-tag">Spreadsheet localization for Unity — a ByteLura product</div>
+</header>
+<div class="layout">
+<nav class="sidebar"><div class="nav-heading">Documentation</div><a href="index.html">Home</a><a href="quick-start.html" class="active">Quick Start</a><a href="sheet-format.html">Sheet Format</a><a href="import-and-merge.html">Import and Merge</a><a href="export-and-missing-reports.html">Export and Missing Reports</a><a href="runtime-use.html">Runtime Use</a><a href="fonts-and-fallback-chains.html">Fonts and Fallback Chains</a><a href="rtl-and-arabic-shaping.html">RTL and Arabic Shaping</a><a href="pseudo-localization.html">Pseudo-Localization</a><a href="sample-guide.html">Sample Guide: Hello World Tour</a><a href="api-summary.html">API Summary</a><a href="honest-limits.html">Honest Limits</a><a href="troubleshooting-and-support.html">Troubleshooting and Support</a></nav>
+<main>
+<h1>Quick Start</h1>
+<p class="lede">From import to a game that switches languages, in about ten minutes. This page follows the same order as the Quick Start shipped inside the package.</p>
+
+<h2>1. Open the window and run setup</h2>
+<p>Open Tools &gt; ByteLura &gt; LingoSheets Pro. The first open shows the welcome screen, with quick actions: Run Setup, Open the Hello World Tour, Documentation, and Support.</p>
+<p>Click Run Setup. Setup creates one folder, Assets/LingoSheets, holding your settings and a starter string table (6 keys in English, Spanish, German, and French), and wires Play Mode so no code is needed to load them. Running setup again is safe by design: an existing table is left untouched and only missing pieces are created.</p>
+<p>Deleting the Assets/LingoSheets folder returns the project to the post-import state. Setup creates nothing outside that folder.</p>
+
+<h2>2. See it work</h2>
+<p>Click Open the Hello World Tour in the same window, press Play, and move through the languages. The greeting card is two bound components — one TextMeshPro label and one uGUI label — switching on their own when the language changes.</p>
+<p>One line in the sample is deliberately present in English only. Watch it fall back to English in every other language, then look at the window's Runtime missing keys block to see the miss recorded with its hit count.</p>
+
+<h2>3. Make it yours</h2>
+<ol>
+<li>Export your starter table with Export sheet, or start a sheet from scratch: first cell <code>key</code>, then one column per language code. The full rules are on the <a href="sheet-format.html">Sheet Format</a> page.</li>
+<li>Fill in your game's strings. Keep keys stable (for example <code>menu.start</code>, <code>hud.ammo</code>). Code and components refer to keys, never to text.</li>
+<li>Back in the window, click Import sheet and choose the file (.csv, .tsv, or .xlsx). The import report tells you exactly what was added, updated, and left unchanged. Keys the sheet does not mention are kept, never deleted.</li>
+</ol>
+
+<h2>4. Bind your UI</h2>
+<ul>
+<li>Add a Localized Text (TextMeshPro) or Localized Text (uGUI) component next to any label and set its key. It follows the current language on its own.</li>
+<li>Add a Language Dropdown component for a ready-made language picker.</li>
+<li>From code: <code>Localization.Get("menu.start")</code>, <code>Localization.Get("game.score", points)</code>, and <code>Localization.SetLanguage(new LanguageCode("es"))</code>. The <a href="runtime-use.html">Runtime Use</a> page covers runtime use in full; the <a href="api-summary.html">API Summary</a> page summarises the calls.</li>
+</ul>
+
+<h2>5. Ship complete</h2>
+<p>Before a release, open the window and read Missing translations: one row per language with its missing count and coverage. Export untranslated hands your translator a sheet containing exactly the gaps. When the filled sheet comes back, import it. The <a href="export-and-missing-reports.html">Export and Missing Reports</a> page covers export and the reports in detail.</p>
+
+<h2>If something does not look right</h2>
+<ul>
+<li>No string table yet: the window shows an empty state with two actions, Run Setup and Import sheet. Nothing is demanded of you before that point.</li>
+<li>A sheet is refused: the window's status line names the problem in plain language, for example a first cell that is not <code>key</code>. The <a href="troubleshooting-and-support.html">Troubleshooting and Support</a> page lists the common cases and the fix for each.</li>
+</ul>
+<footer class="page-footer">LingoSheets Pro is a ByteLura product. Support: <a href="mailto:bytelura@gmail.com">bytelura@gmail.com</a></footer>
+</main>
+</div>
+</body>
+</html>

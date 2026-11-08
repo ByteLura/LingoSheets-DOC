@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Runtime Use — LingoSheets Pro Documentation</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+<div class="site-title">LingoSheets <span>Pro</span></div>
+<div class="site-tag">Spreadsheet localization for Unity — a ByteLura product</div>
+</header>
+<div class="layout">
+<nav class="sidebar"><div class="nav-heading">Documentation</div><a href="index.html">Home</a><a href="quick-start.html">Quick Start</a><a href="sheet-format.html">Sheet Format</a><a href="import-and-merge.html">Import and Merge</a><a href="export-and-missing-reports.html">Export and Missing Reports</a><a href="runtime-use.html" class="active">Runtime Use</a><a href="fonts-and-fallback-chains.html">Fonts and Fallback Chains</a><a href="rtl-and-arabic-shaping.html">RTL and Arabic Shaping</a><a href="pseudo-localization.html">Pseudo-Localization</a><a href="sample-guide.html">Sample Guide: Hello World Tour</a><a href="api-summary.html">API Summary</a><a href="honest-limits.html">Honest Limits</a><a href="troubleshooting-and-support.html">Troubleshooting and Support</a></nav>
+<main>
+<h1>Runtime Use</h1>
+<p class="lede">Components, language switching, fallback chain.</p>
+<figure class="doc-shot"><img src="images/language-switching.jpg" alt="Hello World Tour greeting card shown in Spanish and German after a runtime language switch"><figcaption>One greeting card, switched between Spanish and German at runtime.</figcaption></figure>
+
+<h2>What ships in a player build</h2>
+<p>The imported StringTable asset and the Runtime assembly. There is no spreadsheet parsing and no file access in the runtime lookup path, and the Runtime assembly holds no Editor reference. Sheets stay in the project as source files; the table is what the game carries.</p>
+
+<h2>Initialisation</h2>
+<p>If you used Run Setup, settings also live under Resources, and the facade loads them on first use with no wiring. Explicit initialisation always wins:</p>
+<pre><code>using ByteLura.LingoSheets;
+
+Localization.Initialize(mySettings);</code></pre>
+
+<h2>Reading strings</h2>
+<pre><code>string title = Localization.Get("menu.title");
+string score = Localization.Get("game.score", 1200);
+string hello = Localization.GetNamed("dialogue.hello",
+    new Dictionary&lt;string, string&gt; { { "playerName", "Ash" } });
+
+if (Localization.TryGet("menu.title", out string maybe)) { /* ... */ }
+bool exists = Localization.HasKey("menu.title");</code></pre>
+<ul>
+<li><code>Get(key)</code> returns the resolved string.</li>
+<li><code>Get(key, params object[])</code> fills indexed placeholders ({0}, {1}) using invariant formatting.</li>
+<li><code>GetNamed(key, values)</code> replaces named placeholders ({playerName}) from a dictionary. An unknown named placeholder is left in place and counted as a defect.</li>
+<li>A malformed placeholder shows the raw text and counts a defect. Formatting problems do not interrupt the game loop.</li>
+<li>A lookup never returns null.</li>
+</ul>
+
+<h2>Switching languages</h2>
+<pre><code>Localization.SetLanguage(new LanguageCode("es"));
+Localization.SetLanguage(LanguageCode.FromSystemLanguage(Application.systemLanguage));
+LanguageCode current = Localization.CurrentLanguage;
+Localization.LanguageChanged += code =&gt; RefreshMyUi();</code></pre>
+<p>Setting the language raises <code>LanguageChanged</code> once per actual change; setting the language that is already current raises nothing. The current language is updated before handlers run, so handlers can read the new value directly. Bound components refresh themselves; the event is there for your own objects.</p>
+<p><code>LanguageCode</code> normalises spellings (<code>PT-br</code>, <code>pt_BR</code>, <code> pt-br </code> all become <code>pt-BR</code>), exposes <code>BaseLanguage</code>, converts to and from <code>SystemLanguage</code>, and provides a display name for menus. The empty code means no language and is accepted wherever a code is expected.</p>
+
+<h2>The fallback chain</h2>
+<p>A lookup walks a fixed chain and stops at the first non-empty value:</p>
+<ol>
+<li>The exact language (for example <code>pt-BR</code>).</li>
+<li>Its base language (for example <code>pt</code>).</li>
+<li>The table's default language.</li>
+<li>The key itself. This last step can be switched off in settings (FallBackToKey), in which case an empty string is the final result.</li>
+</ol>
+<p>Every resolution past step 1 is recorded in the missing-key log: key, requested language, where the value came from, and a hit count. Read it in code through <code>Localization.MissingLog</code>, clear it with <code>ClearMissingLog</code>, or watch it live in the home window during Play (<a href="export-and-missing-reports.html">Export and Missing Reports</a>). A <code>MissingKeyFound</code> event is also raised for your own tooling.</p>
+
+<h2>Binding components</h2>
+<ul>
+<li>LocalizedTextMeshPro binds a TextMeshPro text object (UI or 3D) to a key.</li>
+<li>LocalizedText binds a uGUI Text label to a key.</li>
+<li>Both carry a serialized key, optional inspector format arguments, refresh on enable and on language change, per-language font handling (<a href="fonts-and-fallback-chains.html">Fonts and Fallback Chains</a>), an optional automatic alignment flip for right-to-left languages, and Arabic shaping on output (<a href="rtl-and-arabic-shaping.html">RTL and Arabic Shaping</a>).</li>
+<li>A component whose key has no entry shows the fallback result. It never shows an accidental blank.</li>
+<li>LanguageDropdownTMP and LanguageDropdown list exactly the table's languages, using display names. Selecting one switches the language. An external switch moves the dropdown to match, without raising a second language change.</li>
+</ul>
+
+<h2>Settings at a glance</h2>
+<p>The settings asset holds: the active table, the default language, the missing-key behaviour (including the FallBackToKey choice), the pseudo-localization toggle (<a href="pseudo-localization.html">Pseudo-Localization</a>), and the per-language font maps (<a href="fonts-and-fallback-chains.html">Fonts and Fallback Chains</a>). The <a href="api-summary.html">API Summary</a> page lists the corresponding calls.</p>
+<footer class="page-footer">LingoSheets Pro is a ByteLura product. Support: <a href="mailto:bytelura@gmail.com">bytelura@gmail.com</a></footer>
+</main>
+</div>
+</body>
+</html>

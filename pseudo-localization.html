@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pseudo-Localization — LingoSheets Pro Documentation</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+<div class="site-title">LingoSheets <span>Pro</span></div>
+<div class="site-tag">Spreadsheet localization for Unity — a ByteLura product</div>
+</header>
+<div class="layout">
+<nav class="sidebar"><div class="nav-heading">Documentation</div><a href="index.html">Home</a><a href="quick-start.html">Quick Start</a><a href="sheet-format.html">Sheet Format</a><a href="import-and-merge.html">Import and Merge</a><a href="export-and-missing-reports.html">Export and Missing Reports</a><a href="runtime-use.html">Runtime Use</a><a href="fonts-and-fallback-chains.html">Fonts and Fallback Chains</a><a href="rtl-and-arabic-shaping.html">RTL and Arabic Shaping</a><a href="pseudo-localization.html" class="active">Pseudo-Localization</a><a href="sample-guide.html">Sample Guide: Hello World Tour</a><a href="api-summary.html">API Summary</a><a href="honest-limits.html">Honest Limits</a><a href="troubleshooting-and-support.html">Troubleshooting and Support</a></nav>
+<main>
+<h1>Pseudo-Localization</h1>
+
+<h2>Purpose</h2>
+<p>Pseudo-localization stress-tests your interface before real translations arrive. Turn it on and every resolved string becomes visibly marked and noticeably longer, so labels that overflow, truncate, or clip show themselves while the fix is still cheap.</p>
+
+<h2>Turning it on</h2>
+<ul>
+<li>In the settings asset: the PseudoLocalization option.</li>
+<li>In the home window: the toggle in the footer mirrors the same setting.</li>
+</ul>
+<p>It applies to resolved strings at lookup time, so bound components and code lookups both show the transformed text. Turn it off and normal text returns; nothing in your table is changed by the transform.</p>
+
+<h2>The transform</h2>
+<p>For each resolved string, the transform:</p>
+<ul>
+<li>Wraps the text in plain square brackets, so pseudo-localized screens are unmistakable at a glance.</li>
+<li>Doubles every vowel.</li>
+<li>Pads the end so the result is roughly a third longer than the input (about 35 percent).</li>
+</ul>
+<p>Properties worth knowing:</p>
+<ul>
+<li>Deterministic: the same input always produces the same output, so screenshots and comparisons stay stable.</li>
+<li>Placeholders pass through unchanged. <code>{0}</code> and <code>{playerName}</code> stay byte-identical inside the transformed text, so formatting keeps working and placeholder handling can be exercised under pseudo-localization too.</li>
+<li>Empty input produces empty output.</li>
+</ul>
+
+<h2>How to use it well</h2>
+<ol>
+<li>Turn it on, press Play, and walk every screen.</li>
+<li>Note labels that clip, buttons that squeeze their text, and layouts with no room to grow. Real translations into many languages run longer than English source text; a layout that survives the padded transform has headroom.</li>
+<li>Check screens with dynamic values as well: because placeholders survive, score lines and named greetings still format correctly under the transform.</li>
+<li>Turn it off before judging translation coverage. The missing-translation report (<a href="export-and-missing-reports.html">Export and Missing Reports</a>) reads the table, not the transform, but your eyes should judge real text, not padded text.</li>
+</ol>
+<p>Pseudo-localization is a layout tool. It does not translate, approximate a real language, or stand in for reading the finished text in each shipping language.</p>
+<footer class="page-footer">LingoSheets Pro is a ByteLura product. Support: <a href="mailto:bytelura@gmail.com">bytelura@gmail.com</a></footer>
+</main>
+</div>
+</body>
+</html>

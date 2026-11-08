@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Honest Limits — LingoSheets Pro Documentation</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+<div class="site-title">LingoSheets <span>Pro</span></div>
+<div class="site-tag">Spreadsheet localization for Unity — a ByteLura product</div>
+</header>
+<div class="layout">
+<nav class="sidebar"><div class="nav-heading">Documentation</div><a href="index.html">Home</a><a href="quick-start.html">Quick Start</a><a href="sheet-format.html">Sheet Format</a><a href="import-and-merge.html">Import and Merge</a><a href="export-and-missing-reports.html">Export and Missing Reports</a><a href="runtime-use.html">Runtime Use</a><a href="fonts-and-fallback-chains.html">Fonts and Fallback Chains</a><a href="rtl-and-arabic-shaping.html">RTL and Arabic Shaping</a><a href="pseudo-localization.html">Pseudo-Localization</a><a href="sample-guide.html">Sample Guide: Hello World Tour</a><a href="api-summary.html">API Summary</a><a href="honest-limits.html" class="active">Honest Limits</a><a href="troubleshooting-and-support.html">Troubleshooting and Support</a></nav>
+<main>
+<h1>Honest Limits: What v1 Is Not</h1>
+<p class="lede">Honest limits, printed on purpose. Everything here is a decision, not an oversight, and none of it is hidden in fine print anywhere else. This page expands the limits page shipped inside the package and adds nothing beyond it and the product specification.</p>
+<ul>
+<li>No live sync of any kind. No hosted sheets, no cloud fetch, no auto-refresh from a URL, no accounts, no tokens, and no connection to any hosted spreadsheet service. Spreadsheets are local files, and import is a deliberate click on one of them. This is the product's founding decision: a localization pipeline that cannot stop working because a service did.</li>
+<li>No spreadsheet loading in player builds. Sheets are an Editor pipeline. Your game ships the imported string table asset — no file parsing and no file access at runtime, and tables ship as assets rather than being loaded from sheets.</li>
+<li>No XLSX writing. Export is CSV/TSV. Every common spreadsheet application opens them, and translators can return either CSV or XLSX — both import.</li>
+<li>XLSX import reads the first worksheet only. Formulas are never executed; a formula cell contributes its cached string value or is skipped with a warning. Number and date handling follows the <a href="sheet-format.html">Sheet Format</a> page.</li>
+<li>Not a full bidirectional engine. Right-to-left support means: right-to-left language detection, a compact Arabic shaper scoped to single-line UI text and to the shipped samples, and direction and alignment handling that the components apply. It is not a complete UAX#9 implementation. Long multi-paragraph mixed-direction documents are the platform text stack's job, not this package's.</li>
+<li>No shaping for scripts beyond Arabic. Hebrew-class scripts receive detection plus direction and alignment handling. Indic and Thai shaping belong to the platform text stack.</li>
+<li>No plural or gender rules. There is no ICU MessageFormat engine. Placeholders are {0}-style and {name}-style replacement, which covers the large majority of game strings. Grammatically branching sentences are yours to key separately (for example <code>shop.offer.one</code> and <code>shop.offer.many</code>).</li>
+<li>No machine translation, no translation memory, and no glossary checks. This package moves strings between your sheet and your game and shows you what is missing. The words themselves are your translators' craft.</li>
+<li>No bundle delivery. Tables are plain assets in the build. There is no Addressables or asset-bundle packaging of tables in v1.</li>
+<li>Font fallback is per language, per component, plus whatever fallback chain your TextMeshPro font assets themselves define. There is no per-character font substitution engine in this package.</li>
+<li>Import and export are deliberate, separate actions. Nothing synchronises on its own, in either direction, at any time.</li>
+<li>No other ByteLura product is required. The package installs and works on its own; its only declared dependencies are uGUI and TextMeshPro.</li>
+</ul>
+<footer class="page-footer">LingoSheets Pro is a ByteLura product. Support: <a href="mailto:bytelura@gmail.com">bytelura@gmail.com</a></footer>
+</main>
+</div>
+</body>
+</html>

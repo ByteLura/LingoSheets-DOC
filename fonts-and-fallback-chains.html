@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fonts and Fallback Chains — LingoSheets Pro Documentation</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+<div class="site-title">LingoSheets <span>Pro</span></div>
+<div class="site-tag">Spreadsheet localization for Unity — a ByteLura product</div>
+</header>
+<div class="layout">
+<nav class="sidebar"><div class="nav-heading">Documentation</div><a href="index.html">Home</a><a href="quick-start.html">Quick Start</a><a href="sheet-format.html">Sheet Format</a><a href="import-and-merge.html">Import and Merge</a><a href="export-and-missing-reports.html">Export and Missing Reports</a><a href="runtime-use.html">Runtime Use</a><a href="fonts-and-fallback-chains.html" class="active">Fonts and Fallback Chains</a><a href="rtl-and-arabic-shaping.html">RTL and Arabic Shaping</a><a href="pseudo-localization.html">Pseudo-Localization</a><a href="sample-guide.html">Sample Guide: Hello World Tour</a><a href="api-summary.html">API Summary</a><a href="honest-limits.html">Honest Limits</a><a href="troubleshooting-and-support.html">Troubleshooting and Support</a></nav>
+<main>
+<h1>Fonts and Fallback Chains</h1>
+<p class="lede">Two different fallback ideas live in this product, and this page keeps them separate: the language fallback chain for text (<a href="runtime-use.html">Runtime Use</a>) and the font handling described here.</p>
+<figure class="doc-shot"><img src="images/fonts.jpg" alt="LingoSheets Pro home window with a loaded string table, listing translation coverage for each language"><figcaption>The home window with a loaded table, listing coverage per language.</figcaption></figure>
+
+<h2>Per-language font maps</h2>
+<p>The settings asset holds two font maps:</p>
+<ul>
+<li>A TextMeshPro map: language code to TMP font asset.</li>
+<li>A uGUI map: language code to Font.</li>
+</ul>
+<p>Add an entry for each language whose script your default font does not cover well — Arabic and Japanese are the usual first entries. Leave a language unmapped when your existing font already serves it.</p>
+
+<h2>What a bound component does on a language switch</h2>
+<ol>
+<li>It looks up the new language in the matching map (TextMeshPro map for a TextMeshPro component, uGUI map for a uGUI component).</li>
+<li>If a font is mapped, the component applies it.</li>
+<li>If no font is mapped, the component restores the font it had before any mapped font was applied — its original font.</li>
+</ol>
+<p>So switching to a mapped language applies that language's font, and switching on to an unmapped language returns the label to the font you designed with. The component remembers its own starting font; you do not need to track it.</p>
+
+<h2>Scope, stated plainly</h2>
+<ul>
+<li>Fallback here is per language and per component. This package contains no per-character font substitution engine.</li>
+<li>A TextMeshPro font asset's own internal fallback chain still applies inside whichever font asset is selected. That chain belongs to TextMeshPro and to your font assets, not to this package, and the two work together without configuration: this package chooses the asset, TextMeshPro handles glyphs the chosen asset lacks.</li>
+<li>If neither the mapped font nor the original font contains a glyph, what renders is decided by the text stack and the font assets, not by this package. The practical fix is to map a font that covers the script for that language.</li>
+</ul>
+
+<h2>Practical setup</h2>
+<ol>
+<li>Open the settings asset created by Run Setup (under Assets/LingoSheets).</li>
+<li>For each language that needs a different font, add one entry to the TextMeshPro map and, if you use uGUI labels for that language, one entry to the uGUI map.</li>
+<li>Press Play, switch languages, and confirm each label changes font where mapped and returns to its original font where unmapped.</li>
+<li>For right-to-left languages, combine this page with the <a href="rtl-and-arabic-shaping.html">RTL and Arabic Shaping</a> page: the same switch also applies direction and alignment handling, and Arabic shaping where it applies.</li>
+</ol>
+<footer class="page-footer">LingoSheets Pro is a ByteLura product. Support: <a href="mailto:bytelura@gmail.com">bytelura@gmail.com</a></footer>
+</main>
+</div>
+</body>
+</html>

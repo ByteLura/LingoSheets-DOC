@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sample Guide: Hello World Tour — LingoSheets Pro Documentation</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+<div class="site-title">LingoSheets <span>Pro</span></div>
+<div class="site-tag">Spreadsheet localization for Unity — a ByteLura product</div>
+</header>
+<div class="layout">
+<nav class="sidebar"><div class="nav-heading">Documentation</div><a href="index.html">Home</a><a href="quick-start.html">Quick Start</a><a href="sheet-format.html">Sheet Format</a><a href="import-and-merge.html">Import and Merge</a><a href="export-and-missing-reports.html">Export and Missing Reports</a><a href="runtime-use.html">Runtime Use</a><a href="fonts-and-fallback-chains.html">Fonts and Fallback Chains</a><a href="rtl-and-arabic-shaping.html">RTL and Arabic Shaping</a><a href="pseudo-localization.html">Pseudo-Localization</a><a href="sample-guide.html" class="active">Sample Guide: Hello World Tour</a><a href="api-summary.html">API Summary</a><a href="honest-limits.html">Honest Limits</a><a href="troubleshooting-and-support.html">Troubleshooting and Support</a></nav>
+<main>
+<h1>Sample Guide: Hello World Tour</h1>
+
+<h2>What the sample is</h2>
+<p>One greeting card, seven languages, and the whole product in miniature. The sample ships as the Hello World Tour sample in the package and is imported through the Package Manager. Its scripts use only the public runtime surface — the same calls and components your own project will use.</p>
+
+<h2>Run it</h2>
+<ol>
+<li>Import the sample from the Package Manager (LingoSheets Pro, Samples, Hello World Tour, Import).</li>
+<li>Open Tools &gt; ByteLura &gt; LingoSheets Pro and click Run Setup if you have not already, then Open the Hello World Tour.</li>
+<li>Press Play. Use the on-screen buttons or the language dropdown to walk English, Spanish, German, French, Arabic, Hebrew, and Japanese.</li>
+</ol>
+
+<h2>What to look at</h2>
+<ul>
+<li>The big greeting is a TextMeshPro label and the line under it is a uGUI label. Both are bound components; no code switches their text.</li>
+<li>Arabic shapes and right-aligns. Hebrew right-aligns. Switch back to English and layout and fonts return to their original state.</li>
+<li>One line, "This line only exists in English", is translated nowhere else on purpose. In every other language it falls back to English, and the home window's Runtime missing keys block records the miss while you play. That is the fallback chain (<a href="runtime-use.html">Runtime Use</a>) doing its documented job.</li>
+<li>The tour's strings live in Data/hellotour.csv, next to the sample README. That sheet is the source of truth for the sample's own table.</li>
+</ul>
+
+<h2>The sample sheet, measured</h2>
+<ul>
+<li>8 keys: tour.greeting, tour.welcome, tour.prompt, tour.language, tour.score, tour.thanks, tour.goodbye, tour.demo.fallback.</li>
+<li>7 language columns: en, es, de, fr, ar, he, ja — plus the key column and a comment column.</li>
+<li>tour.score carries a {0} placeholder in every language, so formatting can be watched in each language.</li>
+<li>tour.demo.fallback carries a value in English only. In the Missing translations block it shows as missing in the other 6 languages, by design.</li>
+</ul>
+
+<h2>The one-minute experiment</h2>
+<p>This is the workflow your own project will use, compressed into the sample:</p>
+<ol>
+<li>Stop Play. Open Data/hellotour.csv in your spreadsheet application.</li>
+<li>Change the Spanish greeting to anything you like. Save as CSV.</li>
+<li>In the LingoSheets Pro window, point Settings at the sample's setup, click Import sheet, and choose the file. The report tells you exactly what changed: 1 updated.</li>
+<li>Press Play and switch to Spanish. Your word is in the game.</li>
+</ol>
+<p>Sheet, import, game — that round-trip is the entire product workflow.</p>
+
+<h2>Reading the sample code</h2>
+<p>The controller script drives the language walk and the dropdown through the public calls summarised on the <a href="api-summary.html">API Summary</a> page. The sample assembly references the Runtime assembly only, which is deliberate: if it resolves and reads well here, the same surface is what your project codes against.</p>
+<footer class="page-footer">LingoSheets Pro is a ByteLura product. Support: <a href="mailto:bytelura@gmail.com">bytelura@gmail.com</a></footer>
+</main>
+</div>
+</body>
+</html>

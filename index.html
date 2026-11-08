@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overview — LingoSheets Pro Documentation</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+<div class="site-title">LingoSheets <span>Pro</span></div>
+<div class="site-tag">Spreadsheet localization for Unity — a ByteLura product</div>
+</header>
+<div class="layout">
+<nav class="sidebar"><div class="nav-heading">Documentation</div><a href="index.html" class="active">Home</a><a href="quick-start.html">Quick Start</a><a href="sheet-format.html">Sheet Format</a><a href="import-and-merge.html">Import and Merge</a><a href="export-and-missing-reports.html">Export and Missing Reports</a><a href="runtime-use.html">Runtime Use</a><a href="fonts-and-fallback-chains.html">Fonts and Fallback Chains</a><a href="rtl-and-arabic-shaping.html">RTL and Arabic Shaping</a><a href="pseudo-localization.html">Pseudo-Localization</a><a href="sample-guide.html">Sample Guide: Hello World Tour</a><a href="api-summary.html">API Summary</a><a href="honest-limits.html">Honest Limits</a><a href="troubleshooting-and-support.html">Troubleshooting and Support</a></nav>
+<main>
+<h1>LingoSheets Pro — Overview</h1>
+<p class="lede">LingoSheets Pro localizes a Unity game from one spreadsheet. Your strings live in a sheet that you, your producers, and your translators can all edit. In the Editor you import that local file — CSV, TSV, or XLSX — and the import builds a string table asset. Your game then reads that table at runtime and switches languages through TextMeshPro and uGUI components.</p>
+<p>Publisher: ByteLura.<br>Support: <a href="mailto:bytelura@gmail.com">bytelura@gmail.com</a>.</p>
+<figure class="doc-shot"><img class="doc-hero" src="images/hero.jpg" alt="LingoSheets Pro home window in the Unity Editor, showing Run Setup, the Hello World Tour, Documentation and Support actions"><figcaption>The LingoSheets Pro home window, with setup, import and the sample tour in one place.</figcaption></figure>
+
+<h2>The design decision at the centre</h2>
+<p>There is no live dependency of any kind. No accounts, no tokens, no network calls, and no hosted service sit between your sheet and your game — in the runtime or in the Editor tools. Import is a deliberate action on a local file, and the player build ships a self-contained string table asset. A localization pipeline built this way has no external service that can stop working while nobody is watching.</p>
+
+<h2>How the pieces fit together</h2>
+<ul>
+<li>The sheet is the source of truth. Strings enter through import and leave through export.</li>
+<li>The string table is the build artifact. It is a ScriptableObject asset that ships in your build.</li>
+<li>Binding components connect labels and language pickers to keys, so most UI text needs no switching code.</li>
+<li>A documented fallback chain decides what a player sees when a translation is missing, and every fallback is recorded in a missing-key log.</li>
+<li>A missing-translation report names every untranslated key per language, and an untranslated-only export gives translators a sheet containing exactly the gaps.</li>
+<li>Pseudo-localization lengthens and marks every string on demand, so layout problems surface before real translations arrive.</li>
+<li>Right-to-left handling covers detection, direction and alignment handling, and a compact Arabic shaper for single-line UI text, scoped honestly on the <a href="rtl-and-arabic-shaping.html">RTL and Arabic Shaping</a> page and the <a href="honest-limits.html">Honest Limits</a> page.</li>
+</ul>
+
+<h2>What is in the package</h2>
+<ul>
+<li>Runtime components and the lookup facade your game code calls.</li>
+<li>An Editor home window at Tools &gt; ByteLura &gt; LingoSheets Pro with one-click setup, import and export actions, the missing-translation view, and a Verify Install check.</li>
+<li>A starter table (6 keys in English, Spanish, German, and French) created by setup.</li>
+<li>The Hello World Tour sample: one greeting card in seven languages, with its own spreadsheet you can edit and re-import.</li>
+<li>Documentation: this set expands the four pages shipped inside the package (Quick Start, Sheet Format, API Reference, and the honest-limits page).</li>
+</ul>
+
+<h2>Honest scope</h2>
+<p>The Arabic shaper is a compact presentation-form shaper scoped to single-line UI text. It is not a full UAX#9 bidirectional implementation, and its claim extends as far as the shipped sample demonstrates, and no further. Long, multi-paragraph, mixed-direction documents are the platform text stack's job. The full list of what v1 does not do is on the <a href="honest-limits.html">Honest Limits</a> page.</p>
+
+<h2>Requirements</h2>
+<ul>
+<li>Unity 2022.3 LTS or Unity 6.</li>
+<li>Package dependencies: uGUI and TextMeshPro. Nothing else is declared.</li>
+</ul>
+
+<h2>Product gallery</h2>
+<figure class="doc-shot"><img src="images/import.jpg" alt="String table panel showing Import sheet, Export sheet and Export untranslated actions, with a count of keys and languages"><figcaption>Import turns a local spreadsheet file into the string table.</figcaption></figure>
+<figure class="doc-shot"><img src="images/language-switching.jpg" alt="Hello World Tour greeting card shown in Spanish and German after a runtime language switch"><figcaption>The same greeting card in Spanish and German, switched at runtime.</figcaption></figure>
+<figure class="doc-shot"><img src="images/fallback-chain.jpg" alt="Fallback chain steps from the exact language through the base language and the table default to the key itself"><figcaption>The fallback chain: exact language, base language, table default, then the key itself.</figcaption></figure>
+<figure class="doc-shot"><img src="images/sample-tour.jpg" alt="Hello World Tour sample card displaying the welcome greeting in the Unity Editor"><figcaption>The Hello World Tour sample card that ships with the package.</figcaption></figure>
+
+<h2>Where to go next</h2>
+<ul>
+<li>New to the product: <a href="quick-start.html">Quick Start</a>.</li>
+<li>Preparing a sheet: <a href="sheet-format.html">Sheet Format</a>.</li>
+<li>Honest limits before you buy into the workflow: <a href="honest-limits.html">Honest Limits</a>.</li>
+</ul>
+<footer class="page-footer">LingoSheets Pro is a ByteLura product. Support: <a href="mailto:bytelura@gmail.com">bytelura@gmail.com</a></footer>
+</main>
+</div>
+</body>
+</html>

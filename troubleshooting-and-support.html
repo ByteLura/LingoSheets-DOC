@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Troubleshooting and Support — LingoSheets Pro Documentation</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+<div class="site-title">LingoSheets <span>Pro</span></div>
+<div class="site-tag">Spreadsheet localization for Unity — a ByteLura product</div>
+</header>
+<div class="layout">
+<nav class="sidebar"><div class="nav-heading">Documentation</div><a href="index.html">Home</a><a href="quick-start.html">Quick Start</a><a href="sheet-format.html">Sheet Format</a><a href="import-and-merge.html">Import and Merge</a><a href="export-and-missing-reports.html">Export and Missing Reports</a><a href="runtime-use.html">Runtime Use</a><a href="fonts-and-fallback-chains.html">Fonts and Fallback Chains</a><a href="rtl-and-arabic-shaping.html">RTL and Arabic Shaping</a><a href="pseudo-localization.html">Pseudo-Localization</a><a href="sample-guide.html">Sample Guide: Hello World Tour</a><a href="api-summary.html">API Summary</a><a href="honest-limits.html">Honest Limits</a><a href="troubleshooting-and-support.html" class="active">Troubleshooting and Support</a></nav>
+<main>
+<h1>Troubleshooting and Support</h1>
+<p class="lede">Each entry states what happened and the one action that fixes it, in the same plain language the window itself uses.</p>
+
+<h2>Setup and window</h2>
+<ul>
+<li>The window shows "No string table yet." — Nothing is broken; no table exists yet. Click Run Setup to create a starter table, or Import sheet to build one from your own file.</li>
+<li>Verify Install reports a problem — Open Tools &gt; ByteLura &gt; LingoSheets Pro / Verify Install and read the per-check lines in the status line. Each line names one check (assemblies loaded, TextMeshPro present, starter sheet parses, self-test resolution) and whether it passed. Fix the named item, then run Verify Install again. Verify Install writes nothing to your project.</li>
+<li>Setup was run twice — That is safe by design. An existing table is left untouched; only missing pieces are created.</li>
+<li>You want a clean start — Delete the Assets/LingoSheets folder. Setup creates nothing outside it, so deleting it returns the project to the post-import state.</li>
+</ul>
+
+<h2>Import</h2>
+<ul>
+<li>"This sheet's first cell must be 'key'." — Rename the first column header to <code>key</code> and import again. Header rules are on the <a href="sheet-format.html">Sheet Format</a> page.</li>
+<li>A language column is refused as duplicated — The sheet lists the same language twice (spelling variants of one code count as the same language). Remove the duplicate column and import again.</li>
+<li>The report lists keys in the table that are not in the sheet — Those keys were kept, not deleted. If a key was renamed in the sheet, the old key stays in the table until you remove it in the table inspector, and the renamed key arrives as an addition.</li>
+<li>Numbers or dates look wrong after an XLSX import — XLSX numbers import as plain text and date-formatted cells import as their raw number (<a href="sheet-format.html">Sheet Format</a>). Type such values as text in the sheet and re-import.</li>
+<li>Only part of a workbook arrived — XLSX import reads the first worksheet only, by design. Move the strings to the first worksheet, or save that worksheet as CSV and import the CSV.</li>
+<li>A warning names a row with an unclosed quote — The CSV field starting on that row never closes its quote. Fix the quoting in the sheet and re-import; the report's row number points at the field.</li>
+</ul>
+
+<h2>Runtime</h2>
+<ul>
+<li>A label shows the key itself — The key resolved through the whole fallback chain and landed on the final step. The key is missing from the table, or empty in the current language, its base language, and the default language. Check the Missing translations block and the Runtime missing keys block in the window during Play.</li>
+<li>A label shows raw text with braces — A placeholder in that string is malformed, or a named placeholder has no matching value. The defect is counted rather than raised. Check the string's placeholders against the <a href="sheet-format.html">Sheet Format</a> page and the call that supplies values (<a href="runtime-use.html">Runtime Use</a>).</li>
+<li>Switching language does not move a dropdown, or moves it twice — Pickers in this package stay in step with external switches without raising a second change. If a picker behaves otherwise, confirm it is one of the shipped dropdown components and that no project code is also setting its value in a language-change handler.</li>
+<li>A language shows the wrong font — Check the font maps in settings (<a href="fonts-and-fallback-chains.html">Fonts and Fallback Chains</a>). Mapped languages use the mapped font; unmapped languages return to the component's original font. If a script renders with missing glyphs, map a font that covers that script.</li>
+<li>Arabic text appears unshaped or left-aligned in a custom label — Shaping and alignment handling are applied by the shipped binding components. A label driven entirely by custom code needs the shaping call itself; see the <a href="rtl-and-arabic-shaping.html">RTL and Arabic Shaping</a> and <a href="api-summary.html">API Summary</a> pages. Long mixed-direction documents are outside v1 scope (<a href="honest-limits.html">Honest Limits</a>).</li>
+</ul>
+
+<h2>Support</h2>
+<p>Support: <a href="mailto:bytelura@gmail.com">bytelura@gmail.com</a>.</p>
+<p>When you write, include: your Unity version (2022.3 LTS or Unity 6), the import report text if the question is about an import, and the key plus language involved if the question is about a lookup. Those three details answer most questions without a second round.</p>
+<footer class="page-footer">LingoSheets Pro is a ByteLura product. Support: <a href="mailto:bytelura@gmail.com">bytelura@gmail.com</a></footer>
+</main>
+</div>
+</body>
+</html>

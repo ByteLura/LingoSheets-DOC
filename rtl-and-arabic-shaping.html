@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RTL and Arabic Shaping — LingoSheets Pro Documentation</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+<div class="site-title">LingoSheets <span>Pro</span></div>
+<div class="site-tag">Spreadsheet localization for Unity — a ByteLura product</div>
+</header>
+<div class="layout">
+<nav class="sidebar"><div class="nav-heading">Documentation</div><a href="index.html">Home</a><a href="quick-start.html">Quick Start</a><a href="sheet-format.html">Sheet Format</a><a href="import-and-merge.html">Import and Merge</a><a href="export-and-missing-reports.html">Export and Missing Reports</a><a href="runtime-use.html">Runtime Use</a><a href="fonts-and-fallback-chains.html">Fonts and Fallback Chains</a><a href="rtl-and-arabic-shaping.html" class="active">RTL and Arabic Shaping</a><a href="pseudo-localization.html">Pseudo-Localization</a><a href="sample-guide.html">Sample Guide: Hello World Tour</a><a href="api-summary.html">API Summary</a><a href="honest-limits.html">Honest Limits</a><a href="troubleshooting-and-support.html">Troubleshooting and Support</a></nav>
+<main>
+<h1>Right-to-Left and Arabic Shaping</h1>
+<p class="lede">Scoped honestly. This page describes exactly what v1 does for right-to-left text, and the <a href="honest-limits.html">Honest Limits</a> page lists what it does not do. Read both before relying on either.</p>
+
+<h2>What v1 includes</h2>
+<ul>
+<li>Right-to-left language detection.</li>
+<li>A compact Arabic presentation-form shaper, with paragraph reversal for single-line UI strings.</li>
+<li>Direction and alignment helpers that the binding components apply automatically, including an optional automatic alignment flip.</li>
+<li>Arabic and Hebrew rows in the Hello World Tour sample, so the behaviour can be seen in the included demo (<a href="sample-guide.html">Sample Guide</a>).</li>
+</ul>
+
+<h2>Detection</h2>
+<p><code>RtlSupport.IsRightToLeft(code)</code> answers from the base language. The set covered is: ar, he, fa, ur, ps, sd, ug, yi, dv, ckb. Regional variants answer through their base language, so a regional Arabic code is treated as right-to-left.</p>
+<p>Helpers also answer whether a string contains right-to-left characters, and whether it contains Arabic-script characters.</p>
+
+<h2>The Arabic shaper</h2>
+<p><code>ArabicShaper.Shape(text)</code> converts logical-order Arabic text into its shaped, visually ordered form for single-line UI use:</p>
+<ul>
+<li>Letters take their presentation forms according to position.</li>
+<li>The lam-alef sequence shapes to its single ligature form, in both isolated and final contexts.</li>
+<li>Diacritic marks pass through unshaped and stay attached to their letters.</li>
+<li>In a mixed line, non-Arabic runs keep their internal order while the run order of the line is reversed — a line holding a Latin label, an Arabic word, and a number keeps the label and the number readable in place.</li>
+<li>Text with no Arabic passes through unchanged. Empty input returns empty.</li>
+</ul>
+<p>The binding components apply shaping on output when the resolved string calls for it, so labels need no shaping code of their own.</p>
+
+<h2>Hebrew</h2>
+<p>Hebrew needs no shaping. For Hebrew the package provides detection plus direction and alignment handling in the components: the label right-aligns and paragraph direction follows the language. Glyphs themselves come from your font, as with any other language (<a href="fonts-and-fallback-chains.html">Fonts and Fallback Chains</a>).</p>
+
+<h2>The scope line — do not cross it in your own planning</h2>
+<ul>
+<li>The shaper's coverage is the core Arabic alphabet plus common Persian and Urdu letters, as shipped. Its claim extends as far as the shipped sample demonstrates, and no further.</li>
+<li>This is not a full UAX#9 bidirectional implementation. Long, multi-paragraph, mixed-direction documents are the platform text stack's job, not this package's.</li>
+<li>No shaping is provided for scripts beyond Arabic. Detection and direction helpers cover the Hebrew-class scripts listed above; Indic and Thai shaping belong to the platform text stack.</li>
+</ul>
+<p>If your game carries long-form mixed-direction documents, plan that text with the platform stack and use this package for what it is built for: spreadsheet-driven UI strings, with single-line Arabic shaped and demonstrated in the sample.</p>
+<footer class="page-footer">LingoSheets Pro is a ByteLura product. Support: <a href="mailto:bytelura@gmail.com">bytelura@gmail.com</a></footer>
+</main>
+</div>
+</body>
+</html>

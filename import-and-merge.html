@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Import and Merge — LingoSheets Pro Documentation</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+<div class="site-title">LingoSheets <span>Pro</span></div>
+<div class="site-tag">Spreadsheet localization for Unity — a ByteLura product</div>
+</header>
+<div class="layout">
+<nav class="sidebar"><div class="nav-heading">Documentation</div><a href="index.html">Home</a><a href="quick-start.html">Quick Start</a><a href="sheet-format.html">Sheet Format</a><a href="import-and-merge.html" class="active">Import and Merge</a><a href="export-and-missing-reports.html">Export and Missing Reports</a><a href="runtime-use.html">Runtime Use</a><a href="fonts-and-fallback-chains.html">Fonts and Fallback Chains</a><a href="rtl-and-arabic-shaping.html">RTL and Arabic Shaping</a><a href="pseudo-localization.html">Pseudo-Localization</a><a href="sample-guide.html">Sample Guide: Hello World Tour</a><a href="api-summary.html">API Summary</a><a href="honest-limits.html">Honest Limits</a><a href="troubleshooting-and-support.html">Troubleshooting and Support</a></nav>
+<main>
+<h1>Import and Merge</h1>
+
+<h2>The rule underneath everything</h2>
+<p>The sheet is the source of truth; the table is a build artifact. Strings enter only through import (or direct edits in the table inspector) and leave only through export. Import operates on a local file you choose. Nothing is fetched, and nothing refreshes on its own.</p>
+<figure class="doc-shot"><img src="images/import.jpg" alt="String table panel showing Import sheet, Export sheet and Export untranslated actions, with a count of keys and languages"><figcaption>The string table panel, where every import starts from a local file.</figcaption></figure>
+
+<h2>Starting an import</h2>
+<p>In the home window (Tools &gt; ByteLura &gt; LingoSheets Pro), click Import sheet and choose a .csv, .tsv, or .xlsx file. CSV and TSV go through the spreadsheet codec; XLSX goes through the read-only XLSX reader (first worksheet only — <a href="sheet-format.html">Sheet Format</a>). All three formats land on the same grid, and the same merge path applies from there.</p>
+
+<h2>Merge semantics</h2>
+<p>Import merges into the active table. It never replaces the table wholesale.</p>
+<ul>
+<li>A key in the sheet that is not in the table is added.</li>
+<li>A cell whose value differs from the table is updated.</li>
+<li>A cell identical to the table is left unchanged.</li>
+<li>A key that exists in the table but not in the sheet is kept. It is listed in the import report, never deleted. Removing a row from your sheet is not a deletion instruction.</li>
+<li>Duplicate keys in the sheet: the last row wins, counted as a warning with its row number.</li>
+<li>Rows with an empty key, and comment rows starting with <code>#</code>, are skipped and counted.</li>
+</ul>
+
+<h2>The import report</h2>
+<p>Every import ends with a plain-language report in the window's Table block. It states:</p>
+<ul>
+<li>The file name.</li>
+<li>How many keys were added, updated, and left unchanged.</li>
+<li>How many rows were skipped, and why.</li>
+<li>Warnings with row numbers, including unknown columns that were ignored and duplicate keys.</li>
+<li>How many keys in the table were not present in the sheet.</li>
+</ul>
+<p>Example shape: "Imported hellotour.csv — 2 added, 1 updated, 30 unchanged, 0 skipped. 1 key in the table is not in this sheet."</p>
+<p>Read the report before pressing Play. It is the record of exactly what the import changed, and it is the fastest way to catch a wrong file, a renamed column, or a translator's sheet saved in an unexpected layout.</p>
+
+<h2>Refusals</h2>
+<p>Some sheets are refused outright, with the reason shown in the window's status line:</p>
+<ul>
+<li>The first header cell is not <code>key</code>.</li>
+<li>A language column appears twice.</li>
+</ul>
+<p>A refusal imports nothing. Fix the header (<a href="sheet-format.html">Sheet Format</a>) and import again. A refusal is never a silent no-op.</p>
+
+<h2>Setup uses the same path</h2>
+<p>Run Setup builds the starter table by importing the embedded starter sheet through this same importer. There is no separate setup-only code path, so the first table in your project arrives by the exact route your own sheets will take.</p>
+
+<h2>Working habits that keep merges clean</h2>
+<ul>
+<li>Keep one sheet as the source of truth per table, and import from that file.</li>
+<li>Keep keys stable. Renaming a key in the sheet adds a new key and leaves the old one in the table, listed in the report as not present in the sheet.</li>
+<li>Send translators the untranslated-only export (<a href="export-and-missing-reports.html">Export and Missing Reports</a>) instead of a hand-trimmed copy, so what comes back merges without surprises.</li>
+</ul>
+<footer class="page-footer">LingoSheets Pro is a ByteLura product. Support: <a href="mailto:bytelura@gmail.com">bytelura@gmail.com</a></footer>
+</main>
+</div>
+</body>
+</html>
